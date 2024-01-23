@@ -15,3 +15,15 @@ class TestQuickSort(TestCase):
         testee.sort(numbers)
         # then
         assert_equal(numbers, expected)
+
+    def test_input_file(self):
+        # given
+        with open('quick_sort_input.txt', 'r', encoding='UTF-8') as file:
+            # Read each line, strip any whitespace, and convert to integer
+            numbers = [int(line.strip()) for line in file]
+        testee = QuickSort()
+        # when
+        testee.sort(numbers)
+        result = all(numbers[i] <= numbers[i + 1] for i in range(len(numbers) - 1))
+        # then
+        assert_equal(result, True)
