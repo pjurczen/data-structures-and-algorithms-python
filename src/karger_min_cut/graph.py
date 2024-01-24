@@ -24,6 +24,4 @@ class Graph:
     def replace_neighbour(self, key1: VertexKey, key2: VertexKey):
         for vertex in self.vertices.values():
             if key1 in vertex.neighbours:
-                vertex.remove_neighbour(key1)
-                if key2 not in vertex.neighbours:
-                    vertex.add_neighbour(key2)
+                vertex.replace_neighbour(key1, key2)

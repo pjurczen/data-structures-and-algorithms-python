@@ -28,9 +28,11 @@ class TestKargerMinCut(TestCase):
         vertex_2 = Vertex(VertexKey(2))
         vertex_2.add_neighbour(VertexKey(1))
         vertex_2.add_neighbour(VertexKey(3))
+        vertex_2.add_neighbour(VertexKey(3))
         graph.add_vertex(vertex_2)
 
         vertex_3 = Vertex(VertexKey(3))
+        vertex_3.add_neighbour(VertexKey(2))
         vertex_3.add_neighbour(VertexKey(2))
         graph.add_vertex(vertex_3)
 
@@ -41,8 +43,8 @@ class TestKargerMinCut(TestCase):
         v = graph.get_vertex(VertexKey(3))
         # then
         self.assertNotIn(VertexKey(2), graph.vertices)
-        self.assertEqual(u.neighbours, {VertexKey(1): 1, VertexKey(3): 1})
-        self.assertEqual(v.neighbours, {VertexKey(1): 1})
+        self.assertEqual({VertexKey(1): 1, VertexKey(3): 2}, u.neighbours)
+        self.assertEqual({VertexKey(1): 2}, v.neighbours)
 
     def test_remove_self_loop(self):
         # given
@@ -58,7 +60,7 @@ class TestKargerMinCut(TestCase):
         u = graph.get_vertex(VertexKey(1))
         # then
         self.assertNotIn(VertexKey(1), u.neighbours)
-        self.assertEqual(u.neighbours, {VertexKey(2): 1})
+        self.assertEqual({VertexKey(2): 1}, u.neighbours)
 
     def test_remove_self_loop_no_loop(self):
         # given
@@ -73,7 +75,7 @@ class TestKargerMinCut(TestCase):
         u = graph.get_vertex(VertexKey(1))
         # then
         self.assertNotIn(VertexKey(1), u.neighbours)
-        self.assertEqual(u.neighbours, {VertexKey(2): 1})
+        self.assertEqual({VertexKey(2): 1}, u.neighbours)
 
     def test_small_case(self):
         # given
@@ -82,7 +84,7 @@ class TestKargerMinCut(TestCase):
         # when
         result = testee.find_min_cut()
         # then
-        self.assertEqual(result, 1)
+        self.assertEqual(2, result)
 
     def test_input_file(self):
         # given
@@ -91,4 +93,4 @@ class TestKargerMinCut(TestCase):
         # when
         result = testee.find_min_cut()
         # then
-        self.assertEqual(result, 1)
+        self.assertEqual(17, result)

@@ -35,7 +35,25 @@ class Vertex:
         return "{{key: {}, neighbours: {}}}".format(self.key, self.neighbours)
 
     def add_neighbour(self, neighbour: VertexKey):
-        self.neighbours[neighbour] = 1
+        if neighbour in self.neighbours:
+            self.neighbours[neighbour] += 1
+        else:
+            self.neighbours[neighbour] = 1
 
     def remove_neighbour(self, neighbour: VertexKey):
         del self.neighbours[neighbour]
+
+    def take_over_neighbours(self, neighbours):
+        for key, count in neighbours.items():
+            self.add_neighbour_with_count(key, count)
+
+    def add_neighbour_with_count(self, key: VertexKey, count: int):
+        if key in self.neighbours:
+            self.neighbours[key] += count
+        else:
+            self.neighbours[key] = count
+
+    def replace_neighbour(self, key1: VertexKey, key2: VertexKey):
+        count = self.neighbours[key1]
+        del self.neighbours[key1]
+        self.add_neighbour_with_count(key2, count)
