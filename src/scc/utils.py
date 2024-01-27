@@ -1,4 +1,3 @@
-from src.karger_min_cut.graph import Graph
 from src.scc.directed_graph import DirectedGraph
 
 
@@ -24,6 +23,19 @@ def create_graph_from_array(lines: []) -> DirectedGraph:
     return graph
 
 
+def create_reversed_graph_from_array(lines: []) -> DirectedGraph:
+    graph = DirectedGraph()
+    for line in lines:
+        i, j = create_edge_from_line(line)
+        graph.add_arc(j, i)
+    return graph
+
+
 def create_graph_from_file(file_name: str) -> DirectedGraph:
     lines = read_file_into_array(file_name)
     return create_graph_from_array(lines)
+
+
+def create_reversed_graph_from_file(file_name: str) -> DirectedGraph:
+    lines = read_file_into_array(file_name)
+    return create_reversed_graph_from_array(lines)
