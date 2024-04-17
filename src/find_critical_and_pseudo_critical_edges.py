@@ -1,37 +1,56 @@
-from collections import defaultdict
-import heapq
+class UnionFind:
+
+    def __init__(self, n):
+        self.par = [i for i in range(n)]
+        self.rank = [1] * n
+    
+    def find(self, v):
+        while v != self.par[v]:
+            self.par[v] = self.par[self.par[v]]
+            v = self.par[v]
+        return v
+
+    def union(self, v1, v2) -> bool:
+        p1, p2 = self.find(v1), self.find(v2)
+        if p1 == p2:
+            return False
+        if self.rank[p1] >= self.rank[p2]:
+            self.par[v2] = p1
+            self.rank[p1] += self.rank[p2]
+        else:
+            self.par[v1] = p2
+            self.rank[p2] += self.rank[p1]
+        return True
 
 class FindCriticalAndPseudoCriticalEdges:
     def findCriticalAndPseudoCriticalEdges(self, n: int, edges: list[list[int]]) -> list[list[int]]:
         pass
-        # do normal MST algorithm
-        adj = defaultdict(list)
-        for idx, edge in enumerate(edges):
-            a = edge[0]
-            b = edge[1]
-            w = edge[2]
-            adj[a].append((w, idx, b))
-            
-        explored = {0: 0}
-        critical_edges_candidates = {}
-        pseudo_critical_edges = []
-        min_heap = []
-        for w, idx, b in adj[0]:
-            heapq.heappush(min_heap, (w, idx, 0, b))
-        while min_heap:
-            w, idx, a, b = heapq.heappop(min_heap)
-            # first occurence of connecting a new node -> add to critical edges
-            if b not in explored:
-                explored[b] = w
-                critical_edges_candidates[b] = idx
-            # second occurence of connecting a node with same weight -> move from critical edge to pseudo-critical edges 
-            elif explored[b] == w and b in critical_edges_candidates:
-                pseudo_critical_edges.append(critical_edges_candidates[b])
-                del critical_edges_candidates[b]
-                pseudo_critical_edges.append(idx)
-            for w_n, idx_n, b_n in adj[b]:
-                heapq.heappush(min_heap, (w_n, idx_n, b, b_n))
+        for i, e in enumerate(edges):
+            e.append(i)
+        # a, b, w, i
+        edges.sort(key=lambda x: x[2])
+        mst_cost = 0
+        uf = UnionFind(n)
+        for a, b, w, i in edges:
+            if uf.union(a, b):
+                mst_cost += w
+        critical, pseudo = [], []
+        for a1, b1, w1, i1 in edges:
+            uf = UnionFind(n)
+            curr_cost = 0
+            for a2, b2, w2, i2 in edges:
+                if i1 != i2 and uf.union(a2, b2):
+                    curr_cost += w2
+            if max(uf.rank) != n or curr_cost > mst_cost:
+                critical.append(i1)
+                continue
+            uf = UnionFind(n)
+            uf.union(a1, b1)
+            curr_cost = w1
+            for a3, b3, w3, i3 in edges:
+                if uf.union(a3, b3):
+                    curr_cost += w3
+            if curr_cost == mst_cost:
+                pseudo.append(i1)
 
-        critical_edges = [i for i in critical_edges_candidates.values()]
-        return [critical_edges, pseudo_critical_edges]
-        
+        return [critical, pseudo]
