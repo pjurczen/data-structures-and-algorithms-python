@@ -15,10 +15,10 @@ class UnionFind:
         if p1 == p2:
             return False
         if self.rank[p1] >= self.rank[p2]:
-            self.par[v2] = p1
+            self.par[p2] = p1
             self.rank[p1] += self.rank[p2]
         else:
-            self.par[v1] = p2
+            self.par[p1] = p2
             self.rank[p2] += self.rank[p1]
         return True
 
