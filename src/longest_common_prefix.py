@@ -10,13 +10,9 @@ class Solution:
         i: int = 0
         prefix: str = ""
         first_str: str = strs[0]
-        if first_str == "":
-            return prefix
         first_str_len = len(first_str)
         strs_len = len(strs)
-        while True:
-            if first_str_len <= i:
-                break
+        while first_str_len > i:
             curr_char: str = first_str[i]
             invalid_char: bool = False
             for j in range(1, strs_len):
