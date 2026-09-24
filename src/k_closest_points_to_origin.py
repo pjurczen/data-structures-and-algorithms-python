@@ -27,11 +27,12 @@ class Solution:
     # - and thats our stopping condition, e - s + 1 == k
 
     def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
-        return self.quickselect(points, k, 0, len(points) - 1)
+        s, e = self.quickselect(points, k, 0, len(points) - 1)
+        return points[s: e + 1]
 
-    def quickselect(self, points: List[List[int]], k: int, s: int, e: int) -> List[List[int]]:
+    def quickselect(self, points: List[List[int]], k: int, s: int, e: int) -> tuple[int, int]:
         if e - s + 1 == k:
-            return points[s: e + 1]
+            return s, e
 
         pivotIdx = random.randint(s, e)
         pivot = points[pivotIdx]
@@ -55,12 +56,14 @@ class Solution:
 
         leftSlice = endPivotIdx - s + 1
         if leftSlice == k:
-            return points[s:endPivotIdx + 1]
+            return s, endPivotIdx
         elif leftSlice > k:
             return self.quickselect(points, k, s, endPivotIdx - 1)
         else:
             missingElem = k - (endPivotIdx - s + 1)
-            return points[s:endPivotIdx + 1] + self.quickselect(points, missingElem, endPivotIdx + 1, e)
+            s_left, e_left = s, endPivotIdx
+            s_right, e_right = self.quickselect(points, missingElem, endPivotIdx + 1, e)
+            return s_left, e_right
 
     def distance(self, point: List[int]) -> float:
         return sqrt((point[0]) ** 2 + (point[1]) ** 2)
